@@ -1,0 +1,615 @@
+GET _cat/health?v
+
+PUT /sales
+
+PUT /sales/_doc/123
+{
+  "orderId": "123",
+  "orderAmount": "500"
+}
+
+GET /sales/_doc/123
+
+GET /my-test
+
+GET /my-test/_doc/1
+
+POST _bulk 
+{ "index" : { "_index" : "my-test-console", "_type" : "my-type", "_id" : "1" } }
+{ "col1" : "val1" }
+{ "index" : { "_index" : "my-test-console", "_type" : "my-type", "_id" : "2" } }
+{ "col1" : "val2"}
+{ "index" : { "_index" : "my-test-console", "_type" : "my-type", "_id" : "3" } }
+{ "col1" : "val3" }
+
+GET /my-test-console/_doc/1
+
+GET /bank/_doc/1
+
+GET /_cat/indices
+
+GET /bank
+
+
+GET /_cat/indices/logstash-*
+
+PUT /logstash-2015.05.18
+{
+  "mappings": {
+    "log": {
+      "properties": {
+        "geo": {
+          "properties": {
+            "coordinates": {
+              "type": "geo_point"
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+PUT /logstash-2015.05.19
+{
+  "mappings": {
+    "log": {
+      "properties": {
+        "geo": {
+          "properties": {
+            "coordinates": {
+              "type": "geo_point"
+            }
+          }
+        }
+      }
+    }
+  }
+}
+PUT /logstash-2015.05.20
+{
+  "mappings": {
+    "log": {
+      "properties": {
+        "geo": {
+          "properties": {
+            "coordinates": {
+              "type": "geo_point"
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+
+
+GET bank/account/_search
+
+GET bank/account/_search
+{
+  "query":{
+    "match":{
+      "state": "CA"
+    }
+  }
+}
+
+GET bank/account/_search
+{
+  "query":{
+    "bool":{
+      "must": [
+        {
+          "match":{
+            "state": "CA"
+          }
+        },
+                {
+          "match":{
+            "age": "27"
+          }
+        }
+        ]
+    }
+  }
+}
+
+GET bank/account/_search
+{
+  "query":{
+    "bool":{
+      "must_not": [
+        {
+          "match":{
+            "state": "CA"
+          }
+        },
+                {
+          "match":{
+            "age": "27"
+          }
+        }
+        ]
+    }
+  }
+}
+
+GET bank/account/_search
+{
+  "query":{
+    "bool":{
+      "should": [
+        {
+          "match":{
+            "state": "CA"
+          }
+        },
+                {
+          "match":{
+            "lastname": {
+              "query": "Smith",
+              "boost": 3
+            }
+          }
+        }
+        ]
+    }
+  }
+}
+
+GET bank/account/_search
+{
+  "query":{
+    "term":{
+      "account_number": 516
+    }
+  }
+}
+
+GET bank/account/_search
+{
+  "query":{
+    "term":{
+      "state": "RI"
+    }
+  }
+}
+
+GET bank/account/_search
+{
+  "query":{
+    "match":{
+      "state": "RI"
+    }
+  }
+}
+
+
+GET bank/account/_search
+{
+  "query":{
+    "terms":{
+      "account_number": [516, 851]
+    }
+  }
+}
+
+GET bank/account/_search
+{
+  "query":{
+    "range":{
+      "account_number": {
+        "gte": 516,
+        "lte": 851,
+        "boost": 2
+      }
+    }
+  }
+}
+
+GET bank/account/_search
+{
+  "query":{
+    "range":{
+      "age": {
+        "gte": 35
+      }
+    }
+  }
+}
+
+GET bank/_search
+{
+  "query":{
+    "range":{
+      "age": {
+        "gte": 35
+      }
+    }
+  }
+}
+
+GET bank/_analyze
+{
+  "tokenizer": "standard",
+  "text": "The Moon is made of"
+}
+
+GET bank/_analyze
+{
+  "tokenizer": "letter",
+  "text": "The Moon is made of"
+}
+
+GET bank/_analyze
+{
+  "tokenizer": "standard",
+  "text": "you@example.com login at"
+}
+
+GET bank/_analyze
+{
+  "tokenizer": "uax_url_email",
+  "text": "you@example.com login at"
+}
+
+
+PUT /idx1
+{
+  "mappings": {
+    "t1": {
+      "properties": {
+        "title": {
+            "analyzer" : "standard"
+        },
+        "english_title": {
+            "analyzer": "english"
+        }
+      }
+    }
+  }
+}
+
+GET bank/_search
+{
+  "size": 0,
+  "aggs": {
+    "states":{
+      "terms": {
+        "field": "state.keyword"
+      }
+    }
+  }
+}
+
+GET bank/_search
+{
+  "size": 0,
+  "aggs": {
+    "states":{
+      "terms": {
+        "field": "state.keyword"
+      },
+      "aggs": {
+        "avg_balance": {
+          "avg": {
+            "field": "balance"
+          }
+        }
+      }
+    }
+  }
+}
+
+GET bank/_search
+{
+  "size": 0,
+  "aggs": {
+    "states":{
+      "terms": {
+        "field": "state.keyword"
+      },
+      "aggs": {
+        "avg_balance": {
+          "avg": {
+            "field": "balance"
+          }
+        },
+        "gender":{
+          "terms": {
+            "field": "gender.keyword"
+          }
+        }
+      }
+    }
+  }
+}
+
+GET bank/_search
+{
+  "size": 0,
+  "aggs": {
+    "states":{
+      "terms": {
+        "field": "state.keyword"
+      },
+      "aggs": {
+        "avg_balance": {
+          "avg": {
+            "field": "balance"
+          }
+        },
+        "gender":{
+          "terms": {
+            "field": "gender.keyword"
+          },
+          "aggs": {
+            "avg_balance": {
+              "avg": {
+                "field": "balance"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
+
+GET bank/_search
+{
+  "size": 0,
+  "aggs": {
+    "balance_stats": {
+      "stats": {
+        "field": "balance"
+      }
+    }
+  }
+}
+
+GET bank/_search
+{
+  "size": 0,
+  "aggs": {
+    "states":{
+      "terms": {
+        "field": "state.keyword"
+      },
+      "aggs": {
+        "balance_stats": {
+          "stats": {
+            "field": "balance"
+          }
+        }
+      }
+    }
+  }
+}
+
+GET bank/_search
+{
+  "size": 0,
+  "query": {
+    "match_all": {}
+  }, 
+  "aggs": {
+    "states": {
+      "terms": {
+        "field": "state.keyword"
+      }
+    }
+  }
+}
+
+GET bank/_search
+{
+  "size": 0,
+  "query": {
+    "match": {
+      "state.keyword": "CA"
+    }
+  }, 
+  "aggs": {
+    "states": {
+      "terms": {
+        "field": "state.keyword"
+      }
+    }
+  }
+}
+
+GET bank/_search
+{
+  "size": 0,
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "match": {
+            "state.keyword": "CA"
+          }
+        }
+      ]
+    }
+  }, 
+  "aggs": {
+    "states": {
+      "terms": {
+        "field": "state.keyword"
+      }
+    }
+  }
+}
+
+GET bank/_search
+{
+  "size": 0,
+  "query": {
+    "bool": {
+      "must_not": [
+        {
+          "match": {
+            "state.keyword": "CA"
+          }
+        }
+      ]
+    }
+  }, 
+  "aggs": {
+    "states": {
+      "terms": {
+        "field": "state.keyword"
+      }
+    }
+  }
+}
+
+GET bank/_search
+{
+  "size": 0,
+  "query": {
+    "bool": {
+      "must": [
+        {"match": {"state.keyword": "CA"}},
+        {"range": {"age": {"gte": 35}}}
+      ]
+    }
+  }, 
+  "aggs": {
+    "states": {
+      "terms": {
+        "field": "state.keyword"
+      }
+    }
+  }
+}
+
+
+GET bank/_search
+{
+  "size": 0,
+  "query": {
+    "bool": {
+      "must": [
+        {"match": {"state.keyword": "CA"}},
+        {"range": {"age": {"gte": 35}}}
+      ]
+    }
+  }, 
+  "aggs": {
+    "states": {
+      "terms": {
+        "field": "state.keyword"
+      },
+      "aggs": {
+        "avg_balance": {
+          "avg": {
+            "field": "balance"
+          }
+        }
+      }
+    }
+  }
+}
+
+
+GET bank/_search
+{
+  "size": 0,
+    "query": {"match": {"state.keyword": "CA"}
+  },
+  "aggs": {
+    "over35": {
+      "filter": {
+        "range": {"age": {"gte": 35}}
+      },
+      "aggs": {
+        "avg_balance": {
+          "avg": {
+            "field": "balance"
+          }
+        }
+      }
+    }
+  }
+}
+
+
+
+GET bank/_search
+{
+  "size": 0,
+  "aggs": {
+    "state_avg": {
+      "terms": {
+        "field": "state.keyword"
+      },
+      "aggs": {"avg_bal": {"avg": {"field": "balance"}}}
+    },
+    "global_avg": {
+      "global": {},
+      "aggs": {"avg_bal": {"avg": {"field": "balance"}}}
+    }
+  }
+}
+
+
+GET bank/_search
+{
+  "size": 0, 
+  "aggs": {
+    "pct_balances": {
+      "percentiles": {
+        "field": "balance",
+        "percents": [
+          1,
+          5,
+          25,
+          50,
+          75,
+          95,
+          99
+        ],
+        "hdr":{
+          "number_of_significant_value_digits":3
+        }
+      }
+    }
+  }
+}
+
+
+GET bank/_search
+{
+  "size": 0,
+  "aggs": {
+    "bal_outlier": {
+      "percentile_ranks": {
+        "field": "balance",
+        "values": [
+          35000,
+          50000
+        ],
+                "hdr":{
+          "number_of_significant_value_digits":3
+        }
+      }
+    }
+  }
+}
+
+GET bank/_search
+{
+  "size": 0,
+  "aggs": {
+    "balances": {
+      "histogram": {
+        "field": "balance",
+        "interval": 500
+      }
+    }
+  }
+}
